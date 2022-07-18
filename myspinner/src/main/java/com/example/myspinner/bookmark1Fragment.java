@@ -3,10 +3,20 @@ package com.example.myspinner;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +24,11 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class bookmark1Fragment extends Fragment {
+    private RecyclerView.LayoutManager layoutManager;
+    BookmarkAdapter adapter;
+    TestItem dataList;
+    List<Data> dataInfo;
+    RecyclerView recyclerView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,7 +73,32 @@ public class bookmark1Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bookmark1, container, false);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_bookmark1, container, false);
+        dataInfo = new ArrayList<>();
+        recyclerView = view.findViewById(R.id.bookmark1_recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
+        ApiInterface apiInterface = APIClient.getClient().create(ApiInterface.class);
+        Call<TestItem> call = apiInterface.getData();
+        call.enqueue(new Callback<TestItem>() {
+
+            @Override
+            public void onResponse(Call<TestItem> call, Response<TestItem> response) {
+                dataList = response.body();
+                Log.d("bookmark1Fragment", dataList.toString());
+
+                dataInfo = dataList.restaurant;
+
+                adapter = new BookmarkAdapter(getContext(), dataInfo);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<TestItem> call, Throwable t) {
+                Log.d("bookmark1Fragment", t.toString());
+            }
+        });
+        return view;
     }
 }

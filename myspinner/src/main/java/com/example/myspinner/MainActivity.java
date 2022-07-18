@@ -4,12 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
+    TestItem dataList;
 
     String[] items = {"식당", "제품", "레시피"};
 
@@ -53,5 +59,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         });
+
     }
 }
