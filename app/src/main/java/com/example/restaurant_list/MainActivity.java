@@ -3,27 +3,17 @@ package com.example.restaurant_list;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.example.restaurant_list.databinding.ActivityMainBinding;
-import com.google.gson.Gson;
+import com.example.restaurant_list.databinding.ActivityRestaurantBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,13 +26,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     RestaurantAdapter adapter;
-    static RequestQueue requestQueue;
+    //static RequestQueue requestQueue;
     ArrayList<Rest> items = new ArrayList<>();
 
     @Override
@@ -66,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
         ThreadProc();
 
-        if (requestQueue == null) {
+/*        if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getApplicationContext());
-        }
+        }*/
 
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -86,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 String urlStr = "http://mygomhosting.dothome.co.kr/restaurant.php";
                 try {
                     URL url = new URL(urlStr);
+                    // HttpURLConnection 객체 만듦
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 
@@ -105,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         msg.setData(bun);
                         handler.sendMessage(msg);
                     } else {
-                        Log.d("b1a2", "통신 결과 : " + conn.getResponseCode() + "에러");
+                        Log.i("b1a2", "통신 결과 : " + conn.getResponseCode() + "에러");
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -125,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject restObj = restArr.getJSONObject(i);
 
                 Rest rest = new Rest();
+                // 여기서 name에 들어가는 String은  php 파일과 동일해야함.
                 rest.setName(restObj.getString("name"));
                 rest.setAddress(restObj.getString("address"));
                 rest.setImage(restObj.getString("image"));
